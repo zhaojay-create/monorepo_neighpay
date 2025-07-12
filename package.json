@@ -16,5 +16,11 @@
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.11.1",
+    "add": "^2.0.6",
+    "pnpm": "^10.13.1",
+    "prisma": "^6.11.1"
   }
 }

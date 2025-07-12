@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 券状态枚举
+enum CouponStatus {
+  unused // 未使用
+  used // 已使用
+  expired // 已过期
+}
+
+enum CouponType {
+  discount // 折扣券
+  cashback // 现金券 - 无门槛
+  gift // 礼品券
+}
+
+// 订单状态枚举
+enum OrderStatus {
+  pending // 待处理
+  completed // 已完成
+  cancelled // 已取消
+}
+
+model User {
+  id        String        @id @default(uuid())
+  name      String
+  email     String?
+  phone     String        @unique
+  password  String
+  avatar    String?
+  isActive  Boolean       @default(true) // 是否激活
+  lastLogin DateTime? // 最后登录时间
+  coupons   Coupon[] // 用户拥有的优惠券
+  orders    Order[] // 用户的订单
+  session   UserSession[]
+  createdAt DateTime      @default(now()) // 创建时间
+}
+
+model UserSession {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  expiresAt DateTime
+  ip        String?
+  userAgent String? // 登录设备
+}
+
+model Merchant {
+  id          String  @id @default(uuid())
+  name        String // 商户名称
+  logo        String?
+  description String?
+  address     String?
+
+  phone    String  @unique
+  email    String?
+  password String // 商户登录密码
+
+  isActive  Boolean   @default(true) // 商户是否激活
+  lastLogin DateTime? // 商户最后登录时间
+  createdAt DateTime  @default(now()) // 商户创建时间
+
+  orders      Order[] // 商户的订单
+  couponsFrom Coupon[]          @relation("FromMerchant") // 商户发放的优惠券
+  couponsUsed Coupon[]          @relation("UsedMerchant") // 商户使用的优惠券
+  session     MerchantSession[]
+}
+
+model MerchantSession {
+  id         String   @id @default(uuid())
+  merchantId String
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+  createAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  revoked    Boolean  @default(false) // 是否下线，如果是 true 就下线
+  expiresAt  DateTime
+  ip         String?
+  userAgent  String? // 登录设备
+}
+
+model Coupon {
+  id     String @id @default(uuid())
+  userId String // 拥有该券的用户
+  user   User   @relation(fields: [userId], references: [id]) // 关联的用户
+
+  fromMerchantId String // 券来自哪个商户
+  fromMerchant   Merchant @relation("FromMerchant", fields: [fromMerchantId], references: [id]) // 券来自哪个商户
+
+  usedMerchantId String? // 哪个商户使用了该券
+  usedMerchant   Merchant? @relation("UsedMerchant", fields: [usedMerchantId], references: [id]) // 使用该券的商户
+
+  orderId       String? @unique // 该券在哪个订单中被使用
+  order         Order?  @relation("OrderCoupon") // 关联的订单
+  sourceOrderId String? // ✅ 由哪个订单生成的券（新券）
+
+  amount      Decimal      @db.Decimal(10, 2) // 券金额
+  status      CouponStatus // unused | used | expired
+  couponType  CouponType // 券类型，例如 "discount", "cashback", "gift"
+  description String? // 券描述信息
+  title       String // 券标题
+
+  usedAt    DateTime? // 券使用时间
+  issuedAt  DateTime  @default(now()) // 券发放时间
+  expiredAt DateTime // 到期时间
+}
+
+model Order {
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+  merchantId String
+
+  amount         Decimal @db.Decimal(10, 2) // 消费总金额
+  originalAmount Decimal @db.Decimal(10, 2) // 订单原始金额
+
+  couponId String? @unique // 使用的优惠券ID  
+  coupon   Coupon? @relation("OrderCoupon", fields: [couponId], references: [id]) // 关联的优惠券  由 Order 主导关系
+
+  status    OrderStatus // pending | completed | cancelled
+  createdAt DateTime    @default(now())
+}
