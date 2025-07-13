@@ -1,4 +1,4 @@
-import { Order } from "@/prisma/lib/generated/prisma";
+import { type Order } from "@repo/db";
 
 export default function OrderCard({ order }: { order: Order }) {
   return (

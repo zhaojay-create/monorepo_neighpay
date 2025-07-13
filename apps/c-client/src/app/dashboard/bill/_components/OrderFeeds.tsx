@@ -5,7 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { buildUrl, fetcher } from "@/utils";
 import { useEffect } from "react";
 import OrderCard from "./OrderCard";
-import { Order } from "@/prisma/lib/generated/prisma";
+import { Order } from "@repo/db";
 
 const PAGE_SIZE = 6;
 

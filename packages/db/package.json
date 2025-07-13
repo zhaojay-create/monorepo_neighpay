@@ -12,14 +12,16 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "prisma": "^6.11.1"
   },
   "dependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
     "@prisma/client": "^6.11.1",
     "@prisma/extension-accelerate": "^2.0.2",
-    "@types/node": "^22.15.3"
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "bcrypt": "^6.0.0"
   },
   "exports": {
     ".": "./src/index.ts"
