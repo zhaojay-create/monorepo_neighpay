@@ -13,8 +13,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import * as z from "zod/v4";
+import { Coupon } from "@repo/db";
 
-import { Coupon } from "@/prisma/lib/generated/prisma";
+// import { Coupon } from "@/prisma/lib/generated/prisma";
 // import useCashbackCoupon from "@/store/useCashbackCoupon";
 
 const amountSchema = z.string().refine(

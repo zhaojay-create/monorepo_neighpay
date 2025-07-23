@@ -1,6 +1,6 @@
 "use client";
 
-import { Coupon } from "@/prisma/lib/generated/prisma";
+import { Coupon } from "@repo/db";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 

@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import { prisma } from "@repo/db";
 import Link from "next/link";
 import React, { FC } from "react";
 import { Card, CardContent } from "../ui/card";

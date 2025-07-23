@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 
 import { CouponStatus, prisma } from "@repo/db";
 import { getUser } from "@/lib/auth/dal";
-import CollarCounponBtn from "./CollarCounponBtn";
+import CollarCounponBtn from "@/components/common/CollarCounponBtn";
+// import CollarCounponBtn from "./CollarCounponBtn";
 
 async function RecentCoupons() {
   // 1. 获取用户

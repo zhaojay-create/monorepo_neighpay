@@ -1,7 +1,7 @@
-import prisma from "@/lib/prisma";
 import Link from "next/link";
 import React, { FC } from "react";
-import { Card, CardContent } from "../ui/card";
+import { prisma } from "@repo/db";
+import { Card, CardContent } from "@/components/ui/card";
 
 const RecommendMerchant: FC = async () => {
   // 1. 查询推荐商户

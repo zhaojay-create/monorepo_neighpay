@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import prisma from "@/lib/prisma";
+// import prisma from "@/lib/prisma";
+// import { CouponStatus } from "@/prisma/lib/generated/prisma";
+import { prisma, CouponStatus } from "@repo/db";
 import { getUser } from "@/lib/auth/dal";
-import { CouponStatus } from "@/prisma/lib/generated/prisma";
 import CollarCounponBtn from "./CollarCounponBtn";
 
 async function RecentCoupons() {
